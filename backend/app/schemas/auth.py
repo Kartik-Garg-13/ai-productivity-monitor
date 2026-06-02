@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pydantic import BaseModel, EmailStr
 
 
@@ -18,3 +20,4 @@ class UserMeResponse(BaseModel):
     email: EmailStr
     role: str
     department: str | None = None
+

@@ -5,9 +5,17 @@ import { useAuth } from "../context/AuthContext";
 const links = [
   { to: "/admin", label: "Dashboard" },
   { to: "/admin/employees", label: "Employees" },
+  { to: "/admin/projects", label: "Projects" },
+  { to: "/admin/tasks", label: "Tasks" },
   { to: "/admin/attendance", label: "Attendance" },
   { to: "/admin/workflow", label: "SOD/EOD Review" },
   { to: "/admin/leaves", label: "Leave Approvals" },
+  { to: "/admin/announcements", label: "Announcements" },
+  { to: "/admin/holidays", label: "Holidays" },
+  { to: "/admin/documents", label: "Documents" },
+  { to: "/admin/expenses", label: "Expenses" },
+  { to: "/admin/salary", label: "Salary" },
+  { to: "/admin/audit", label: "Audit Logs" },
 ];
 
 export default function AdminLayout() {

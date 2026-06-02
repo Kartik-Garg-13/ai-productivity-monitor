@@ -11,7 +11,9 @@ export default function Sidebar({ links }) {
             key={link.to}
             to={link.to}
             className={`block rounded px-3 py-2 ${
-              pathname === link.to ? "bg-indigo-500" : "hover:bg-slate-800"
+              pathname === link.to || (link.to !== "/admin" && link.to !== "/employee/dashboard" && pathname.startsWith(link.to))
+                ? "bg-indigo-500"
+                : "hover:bg-slate-800"
             }`}
           >
             {link.label}

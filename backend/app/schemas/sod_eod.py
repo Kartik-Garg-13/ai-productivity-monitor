@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import date, time
 
 from pydantic import BaseModel, Field
@@ -26,3 +28,4 @@ class EODCreate(BaseModel):
 class ReviewRequest(BaseModel):
     review_status: str
     admin_remarks: str | None = None
+

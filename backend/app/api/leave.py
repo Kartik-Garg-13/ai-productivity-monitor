@@ -1,12 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, HTTPException, Request
+from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_current_user, require_admin
+from app.core.request_utils import get_client_ip
 from app.db.session import get_db
 from app.models.employee import Employee
 from app.models.leave import LeaveApplication, LeaveBalance
 from app.models.user import User
 from app.schemas.leave import LeaveApply, LeaveReview
+from app.services.audit_service import log_action
+from app.services.notification_service import NotificationService
+
 router = APIRouter(prefix="/leave", tags=["leave"])
 
 
@@ -43,12 +47,23 @@ def leave_history(db: Session = Depends(get_db), current_user: User = Depends(ge
 
 @router.get("/admin/pending")
 def pending_leave_requests(db: Session = Depends(get_db), _: User = Depends(require_admin)):
-    return db.query(LeaveApplication).filter(LeaveApplication.status == "pending").all()
+    return db.query(LeaveApplication).options(joinedload(LeaveApplication.employee)).filter(LeaveApplication.status == "pending").all()
 
 
 @router.patch("/admin/{leave_id}")
-def review_leave(leave_id: int, payload: LeaveReview, db: Session = Depends(get_db), _: User = Depends(require_admin)):
-    app = db.query(LeaveApplication).filter(LeaveApplication.id == leave_id).first()
+def review_leave(
+    leave_id: int,
+    payload: LeaveReview,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin),
+):
+    app = (
+        db.query(LeaveApplication)
+        .options(joinedload(LeaveApplication.employee).joinedload(Employee.user))
+        .filter(LeaveApplication.id == leave_id)
+        .first()
+    )
     if not app:
         raise HTTPException(status_code=404, detail="Leave request not found")
     app.status = payload.status
@@ -58,4 +73,13 @@ def review_leave(leave_id: int, payload: LeaveReview, db: Session = Depends(get_
         balance.leave_taken += app.duration_days
         balance.remaining_leave = max(0, balance.total_leave - balance.leave_taken)
     db.commit()
+    action = "Leave Approved" if payload.status == "approved" else "Leave Rejected"
+    log_action(db, user=current_user, action=action, entity_type="leave", entity_id=app.id, ip_address=get_client_ip(request))
+    db.commit()
+    if app.employee and app.employee.user:
+        email = app.employee.user.email
+        if payload.status == "approved":
+            NotificationService.leave_approved(email, str(app.start_date), str(app.end_date))
+        else:
+            NotificationService.leave_rejected(email, payload.admin_remarks)
     return {"message": "Leave request updated"}

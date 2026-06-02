@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import date
 
 from pydantic import BaseModel
@@ -14,3 +16,4 @@ class LeaveApply(BaseModel):
 class LeaveReview(BaseModel):
     status: str
     admin_remarks: str | None = None
+

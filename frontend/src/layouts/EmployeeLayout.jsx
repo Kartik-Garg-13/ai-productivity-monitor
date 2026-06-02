@@ -3,10 +3,17 @@ import Sidebar from "../components/Sidebar";
 import { useAuth } from "../context/AuthContext";
 
 const links = [
-  { to: "/employee", label: "Dashboard" },
+  { to: "/employee/dashboard", label: "Dashboard" },
+  { to: "/employee/projects", label: "Projects" },
+  { to: "/employee/tasks", label: "Tasks" },
   { to: "/employee/attendance", label: "Attendance" },
   { to: "/employee/workflow", label: "SOD/EOD" },
   { to: "/employee/leaves", label: "Leaves" },
+  { to: "/employee/announcements", label: "Announcements" },
+  { to: "/employee/holidays", label: "Holidays" },
+  { to: "/employee/documents", label: "Documents" },
+  { to: "/employee/expenses", label: "Expenses" },
+  { to: "/employee/salary", label: "Salary" },
   { to: "/employee/profile", label: "Profile" },
 ];
 

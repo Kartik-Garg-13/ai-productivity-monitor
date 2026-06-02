@@ -1,16 +1,30 @@
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
-from app.api import attendance, auth, dashboard, employees, leave, sod_eod
+from app.api import (
+    announcements,
+    attendance,
+    audit,
+    auth,
+    company_documents,
+    dashboard,
+    employees,
+    expenses,
+    holidays,
+    leave,
+    projects,
+    salary,
+    sod_eod,
+    tasks,
+)
 from app.core.config import get_settings
-from app.db.base import Base
-from app.db.init_db import seed_admin
+from app.db.init_db import seed_admin, seed_default_employee
+from app.db.migrate import run_migrations
 from app.db.session import SessionLocal, engine
-from app.models import attendance as _attendance  # noqa
-from app.models import employee as _employee  # noqa
-from app.models import leave as _leave  # noqa
-from app.models import sod_eod as _sod_eod  # noqa
-from app.models import user as _user  # noqa
+import app.models  # noqa: F401  # register all SQLAlchemy models (do not shadow API modules)
 
 settings = get_settings()
 app = FastAPI(title=settings.app_name)
@@ -26,10 +40,11 @@ app.add_middleware(
 
 @app.on_event("startup")
 def on_startup():
-    Base.metadata.create_all(bind=engine)
+    run_migrations(engine)
     db = SessionLocal()
     try:
         seed_admin(db)
+        seed_default_employee(db)
     finally:
         db.close()
 
@@ -40,6 +55,18 @@ app.include_router(attendance.router, prefix=settings.api_v1_prefix)
 app.include_router(sod_eod.router, prefix=settings.api_v1_prefix)
 app.include_router(leave.router, prefix=settings.api_v1_prefix)
 app.include_router(dashboard.router, prefix=settings.api_v1_prefix)
+app.include_router(projects.router, prefix=settings.api_v1_prefix)
+app.include_router(tasks.router, prefix=settings.api_v1_prefix)
+app.include_router(announcements.router, prefix=settings.api_v1_prefix)
+app.include_router(holidays.router, prefix=settings.api_v1_prefix)
+app.include_router(company_documents.router, prefix=settings.api_v1_prefix)
+app.include_router(expenses.router, prefix=settings.api_v1_prefix)
+app.include_router(salary.router, prefix=settings.api_v1_prefix)
+app.include_router(audit.router, prefix=settings.api_v1_prefix)
+
+uploads_dir = Path(__file__).resolve().parent.parent / "uploads"
+uploads_dir.mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
 
 @app.get("/")
