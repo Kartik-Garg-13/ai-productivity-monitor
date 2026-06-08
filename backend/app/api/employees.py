@@ -13,6 +13,7 @@ from app.schemas.employee import (
     EmployeeProfileUpdate,
     EmployeeResponse,
 )
+from app.utils.file_validation import validate_upload_file
 from app.services.audit_service import log_action
 from app.services.employee_service import (
     build_profile_response,
@@ -123,8 +124,7 @@ async def upload_document(
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
     content = await file.read()
-    if not content:
-        raise HTTPException(status_code=400, detail="Empty file")
+    validate_upload_file(file.filename, content, image_only=document_type == "profile_photo")
     doc = save_document(db, employee_id, document_type, file.filename or "upload", content)
     return {"id": doc.id, "document_type": doc.document_type, "file_path": doc.file_path}
 

@@ -10,6 +10,7 @@ from app.api import (
     audit,
     auth,
     company_documents,
+    company_settings,
     dashboard,
     employees,
     expenses,
@@ -60,6 +61,7 @@ app.include_router(tasks.router, prefix=settings.api_v1_prefix)
 app.include_router(announcements.router, prefix=settings.api_v1_prefix)
 app.include_router(holidays.router, prefix=settings.api_v1_prefix)
 app.include_router(company_documents.router, prefix=settings.api_v1_prefix)
+app.include_router(company_settings.router, prefix=settings.api_v1_prefix)
 app.include_router(expenses.router, prefix=settings.api_v1_prefix)
 app.include_router(salary.router, prefix=settings.api_v1_prefix)
 app.include_router(audit.router, prefix=settings.api_v1_prefix)

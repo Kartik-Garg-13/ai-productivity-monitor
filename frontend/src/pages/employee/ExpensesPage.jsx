@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import DataTable from "../../components/DataTable";
+import DragDropUpload from "../../components/DragDropUpload";
 import StatusBadge from "../../components/StatusBadge";
 import { useToast } from "../../context/ToastContext";
 import { getErrorMessage } from "../../services/crudService";
@@ -31,6 +32,8 @@ export default function EmployeeExpensesPage() {
     try {
       await expenseService.submit(fd);
       showToast("Expense submitted");
+      setBill(null);
+      setForm({ expense_date: "", expense_type: "", expense_category: "", amount: "", description: "" });
       load();
     } catch (err) {
       showToast(getErrorMessage(err), "error");
@@ -47,14 +50,21 @@ export default function EmployeeExpensesPage() {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">My Expenses</h2>
-      <form onSubmit={submit} className="bg-white p-4 rounded-xl shadow grid md:grid-cols-3 gap-3">
-        <input type="date" className="border p-2 rounded" required value={form.expense_date} onChange={(e) => setForm({ ...form, expense_date: e.target.value })} />
-        <input className="border p-2 rounded" placeholder="Type" required value={form.expense_type} onChange={(e) => setForm({ ...form, expense_type: e.target.value })} />
-        <input className="border p-2 rounded" placeholder="Category" required value={form.expense_category} onChange={(e) => setForm({ ...form, expense_category: e.target.value })} />
-        <input className="border p-2 rounded" placeholder="Amount" required value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} />
-        <input className="border p-2 rounded" placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-        <input type="file" className="border p-2 rounded" onChange={(e) => setBill(e.target.files[0])} />
-        <button type="submit" className="bg-indigo-600 text-white rounded-lg md:col-span-3">Submit Expense</button>
+      <form onSubmit={submit} className="bg-white p-4 rounded-xl shadow space-y-4">
+        <div className="grid md:grid-cols-3 gap-3">
+          <input type="date" className="border p-2 rounded" required value={form.expense_date} onChange={(e) => setForm({ ...form, expense_date: e.target.value })} />
+          <input className="border p-2 rounded" placeholder="Type" required value={form.expense_type} onChange={(e) => setForm({ ...form, expense_type: e.target.value })} />
+          <input className="border p-2 rounded" placeholder="Category" required value={form.expense_category} onChange={(e) => setForm({ ...form, expense_category: e.target.value })} />
+          <input className="border p-2 rounded" placeholder="Amount" required value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} />
+          <input className="border p-2 rounded md:col-span-2" placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+        </div>
+        <DragDropUpload
+          label="Expense Bill / Receipt"
+          value={bill}
+          onChange={setBill}
+          hint="Upload receipt: PDF, PNG, JPG, etc. — max 10 MB"
+        />
+        <button type="submit" className="bg-indigo-600 text-white rounded-lg px-6 py-2.5">Submit Expense</button>
       </form>
       <DataTable columns={columns} rows={items} loading={loading} />
     </div>

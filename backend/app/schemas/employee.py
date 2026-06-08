@@ -109,6 +109,9 @@ class EmployeeProfileBase(BaseModel):
     blood_group: str | None = None
 
     pan_number: str | None = None
+    uan_number: str | None = None
+    pf_number: str | None = None
+    work_location: str | None = None
     aadhaar_number: str | None = None
     passport_number: str | None = None
     passport_issue_date: date | None = None
@@ -164,6 +167,9 @@ class EmployeeProfileUpdate(BaseModel):
     number_of_children: int | None = None
     blood_group: str | None = None
     pan_number: str | None = None
+    uan_number: str | None = None
+    pf_number: str | None = None
+    work_location: str | None = None
     aadhaar_number: str | None = None
     passport_number: str | None = None
     passport_issue_date: date | None = None
@@ -263,6 +269,9 @@ class EmployeeProfileFull(BaseModel):
     profile_photo_path: str | None = None
 
     pan_number: str | None = None
+    uan_number: str | None = None
+    pf_number: str | None = None
+    work_location: str | None = None
     aadhaar_number: str | None = None
     passport_number: str | None = None
     passport_issue_date: date | None = None

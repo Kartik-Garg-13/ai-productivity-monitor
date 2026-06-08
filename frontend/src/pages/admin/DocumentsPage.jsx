@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import DataTable from "../../components/DataTable";
 import DeleteConfirmation from "../../components/DeleteConfirmation";
+import DragDropUpload from "../../components/DragDropUpload";
 import PaginationBar from "../../components/PaginationBar";
 import { useToast } from "../../context/ToastContext";
 import { getErrorMessage, uploadBaseUrl } from "../../services/crudService";
@@ -76,13 +77,21 @@ export default function DocumentsPage() {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">Document Center</h2>
-      <form onSubmit={upload} className="bg-white p-4 rounded-xl shadow grid md:grid-cols-4 gap-3">
-        <input className="border p-2 rounded" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
-        <select className="border p-2 rounded" value={category} onChange={(e) => setCategory(e.target.value)}>
-          {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-        </select>
-        <input type="file" className="border p-2 rounded" onChange={(e) => setFile(e.target.files[0])} required />
-        <button type="submit" className="bg-indigo-600 text-white rounded-lg">Upload</button>
+      <form onSubmit={upload} className="bg-white p-4 rounded-xl shadow space-y-4">
+        <div className="grid md:grid-cols-2 gap-3">
+          <input className="border p-2 rounded" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <select className="border p-2 rounded" value={category} onChange={(e) => setCategory(e.target.value)}>
+            {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+          </select>
+        </div>
+        <DragDropUpload
+          label="Company Document"
+          value={file}
+          onChange={setFile}
+          required
+          hint="PDF, DOC, DOCX, PNG, JPG, XLS, XLSX, ZIP — max 10 MB"
+        />
+        <button type="submit" className="bg-indigo-600 text-white rounded-lg px-6 py-2.5">Upload Document</button>
       </form>
       <input className="border p-2 rounded max-w-md" placeholder="Search..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
       <DataTable columns={columns} rows={items} loading={loading} />

@@ -2,6 +2,7 @@ from app.models.announcement import Announcement
 from app.models.attendance import Attendance
 from app.models.audit_log import AuditLog
 from app.models.company_document import CompanyDocument, DocumentDownload
+from app.models.company_settings import CompanySettings
 from app.models.employee import Employee
 from app.models.employee_address import EmployeeAddress
 from app.models.employee_bank import EmployeeBankDetail

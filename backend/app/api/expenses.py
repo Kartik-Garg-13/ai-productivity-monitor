@@ -13,6 +13,7 @@ from app.models.employee import Employee
 from app.models.expense import Expense, ExpenseAttachment
 from app.models.user import User
 from app.schemas.expense import ExpenseCreate, ExpenseListResponse, ExpenseResponse, ExpenseReview
+from app.utils.file_validation import validate_upload_file
 from app.services.audit_service import log_action
 from app.services.notification_service import NotificationService
 
@@ -91,11 +92,13 @@ async def submit_expense(
     db.add(exp)
     db.flush()
     if bill and bill.filename:
+        bill_content = await bill.read()
+        validate_upload_file(bill.filename, bill_content)
         UPLOAD_ROOT.mkdir(parents=True, exist_ok=True)
         ext = os.path.splitext(bill.filename)[1]
         stored = f"{uuid.uuid4().hex}{ext}"
         path = UPLOAD_ROOT / stored
-        path.write_bytes(await bill.read())
+        path.write_bytes(bill_content)
         db.add(ExpenseAttachment(expense_id=exp.id, file_path=f"uploads/expenses/{stored}", original_filename=bill.filename))
     db.commit()
     exp = db.query(Expense).options(joinedload(Expense.employee), joinedload(Expense.attachments)).filter(Expense.id == exp.id).first()

@@ -39,6 +39,9 @@ class Employee(Base):
     profile_photo_path: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
     pan_number: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    uan_number: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    pf_number: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    work_location: Mapped[str | None] = mapped_column(String(100), nullable=True)
     aadhaar_number: Mapped[str | None] = mapped_column(String(20), nullable=True)
     passport_number: Mapped[str | None] = mapped_column(String(30), nullable=True)
     passport_issue_date: Mapped[date | None] = mapped_column(Date, nullable=True)

@@ -2,6 +2,7 @@ from datetime import date
 
 from sqlalchemy.orm import Session
 
+from app.core.leave_constants import DEFAULT_LEAVE_TOTALS, LEAVE_TYPES
 from app.core.security import get_password_hash
 from app.models.employee import Employee
 from app.models.employee_skills import EmployeeSkills
@@ -58,7 +59,17 @@ def seed_default_employee(db: Session) -> None:
     )
     db.add(employee)
     db.flush()
-    db.add(LeaveBalance(employee_id=employee.id))
+    for lt in LEAVE_TYPES:
+        total = DEFAULT_LEAVE_TOTALS[lt]
+        db.add(
+            LeaveBalance(
+                employee_id=employee.id,
+                leave_type=lt,
+                total_leave=total,
+                leave_taken=0,
+                remaining_leave=total,
+            )
+        )
     db.add(
         EmployeeSkills(
             employee_id=employee.id,

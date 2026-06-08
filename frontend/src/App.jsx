@@ -15,6 +15,8 @@ import ExpensesPage from "./pages/admin/ExpensesPage";
 import HolidaysPage from "./pages/admin/HolidaysPage";
 import LeaveApprovalsPage from "./pages/admin/LeaveApprovalsPage";
 import ProjectsPage from "./pages/admin/ProjectsPage";
+import LeaveReportsPage from "./pages/admin/LeaveReportsPage";
+import CompanySettingsPage from "./pages/admin/CompanySettingsPage";
 import SalaryPage from "./pages/admin/SalaryPage";
 import TasksPage from "./pages/admin/TasksPage";
 import WorkflowReviewPage from "./pages/admin/WorkflowReviewPage";
@@ -51,6 +53,8 @@ function App() {
         <Route path="attendance" element={<AttendanceAdminPage />} />
         <Route path="workflow" element={<WorkflowReviewPage />} />
         <Route path="leaves" element={<LeaveApprovalsPage />} />
+        <Route path="leave-reports" element={<LeaveReportsPage />} />
+        <Route path="company-settings" element={<CompanySettingsPage />} />
         <Route path="projects" element={<ProjectsPage />} />
         <Route path="tasks" element={<TasksPage />} />
         <Route path="announcements" element={<AnnouncementsPage />} />

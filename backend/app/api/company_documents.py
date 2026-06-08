@@ -11,6 +11,7 @@ from app.db.session import get_db
 from app.models.company_document import CompanyDocument, DocumentDownload
 from app.models.user import User
 from app.schemas.company_document import CompanyDocumentListResponse, CompanyDocumentResponse
+from app.utils.file_validation import validate_upload_file
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 UPLOAD_ROOT = Path(__file__).resolve().parents[2] / "uploads" / "company"
@@ -70,6 +71,7 @@ async def upload_document(
     stored = f"{uuid.uuid4().hex}{ext}"
     path = UPLOAD_ROOT / stored
     content = await file.read()
+    validate_upload_file(file.filename, content)
     path.write_bytes(content)
     rel = f"uploads/company/{stored}"
     doc = CompanyDocument(

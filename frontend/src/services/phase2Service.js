@@ -51,7 +51,12 @@ export const expenseService = {
 
 export const salaryService = {
   list: (params) => api.get("/salary", { params }),
+  get: (id) => api.get(`/salary/${id}`),
+  preview: (id) => api.get(`/salary/${id}/preview`),
+  download: (id) => api.get(`/salary/${id}/download`, { responseType: "blob" }),
   generate: (data) => api.post("/salary/generate", data),
+  update: (id, data) => api.patch(`/salary/${id}`, data),
+  regenerate: (id) => api.post(`/salary/${id}/regenerate`),
   markPaid: (id, data) => api.patch(`/salary/${id}/paid`, data),
   remove: (id) => api.delete(`/salary/${id}`),
 };

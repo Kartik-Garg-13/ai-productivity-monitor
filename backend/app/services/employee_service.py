@@ -226,6 +226,9 @@ def _apply_scalar_fields(employee: Employee, data: EmployeeProfileCreate | Emplo
         "number_of_children",
         "blood_group",
         "pan_number",
+        "uan_number",
+        "pf_number",
+        "work_location",
         "aadhaar_number",
         "passport_number",
         "passport_issue_date",
@@ -357,6 +360,9 @@ def build_profile_response(db: Session, employee: Employee) -> EmployeeProfileFu
         blood_group=employee.blood_group,
         profile_photo_path=employee.profile_photo_path,
         pan_number=employee.pan_number,
+        uan_number=employee.uan_number,
+        pf_number=employee.pf_number,
+        work_location=employee.work_location,
         aadhaar_number=employee.aadhaar_number,
         passport_number=employee.passport_number,
         passport_issue_date=employee.passport_issue_date,
@@ -460,7 +466,9 @@ def create_employee_profile(db: Session, data: EmployeeProfileCreate) -> Employe
     db.add(employee)
     db.flush()
     _apply_scalar_fields(employee, data)
-    db.add(LeaveBalance(employee_id=employee.id))
+    from app.services.leave_service import ensure_leave_balances
+
+    ensure_leave_balances(db, employee.id)
     db.flush()
 
     _set_addresses(db, employee, data.permanent_address, data.correspondence_address, data.same_as_permanent)

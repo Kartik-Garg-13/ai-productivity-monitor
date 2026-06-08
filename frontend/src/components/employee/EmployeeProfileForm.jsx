@@ -8,6 +8,8 @@ import {
   defaultProfile,
   emptyAddress,
 } from "../../constants/employeeProfile";
+import DragDropUpload from "../../components/DragDropUpload";
+import { IMAGE_ACCEPT } from "../../constants/uploadConfig";
 import { Field, Input, Select, TextArea } from "./FormField";
 
 function setNested(setForm, path, value) {
@@ -44,6 +46,7 @@ export default function EmployeeProfileForm({ initial, isEdit, onSubmit, submitt
       <Field label="Employee Code"><Input value={form.employee_code} onChange={(e) => update("employee_code", e.target.value)} placeholder="Auto-generated if empty" /></Field>
       <Field label="Designation *"><Input required value={form.designation} onChange={(e) => update("designation", e.target.value)} /></Field>
       <Field label="Department *"><Input required value={form.department} onChange={(e) => update("department", e.target.value)} /></Field>
+      <Field label="Work Location"><Input value={form.work_location} onChange={(e) => update("work_location", e.target.value)} placeholder="e.g. Bangalore Office" /></Field>
       <Field label="Date of Joining *"><Input required type="date" value={form.joining_date} onChange={(e) => update("joining_date", e.target.value)} /></Field>
       <Field label="Employment Type"><Select value={form.employment_type} onChange={(e) => update("employment_type", e.target.value)}><option value="full-time">Full-time</option><option value="part-time">Part-time</option><option value="contract">Contract</option><option value="intern">Intern</option></Select></Field>
       <Field label="Reporting Manager"><Input value={form.reporting_manager} onChange={(e) => update("reporting_manager", e.target.value)} /></Field>
@@ -75,7 +78,13 @@ export default function EmployeeProfileForm({ initial, isEdit, onSubmit, submitt
       <Field label="Number of Children"><Input type="number" min="0" value={form.number_of_children} onChange={(e) => update("number_of_children", e.target.value)} /></Field>
       <Field label="Blood Group"><Input value={form.blood_group} onChange={(e) => update("blood_group", e.target.value)} /></Field>
       <Field label="Passport Photo">
-        <Input type="file" accept="image/*" onChange={(e) => update("pendingFiles", { ...form.pendingFiles, profile_photo: e.target.files[0] })} />
+        <DragDropUpload
+          compact
+          accept={IMAGE_ACCEPT}
+          value={form.pendingFiles?.profile_photo || null}
+          onChange={(file) => update("pendingFiles", { ...form.pendingFiles, profile_photo: file })}
+          hint="PNG or JPG, max 10 MB"
+        />
       </Field>
     </div>
   );
@@ -84,6 +93,8 @@ export default function EmployeeProfileForm({ initial, isEdit, onSubmit, submitt
     <div className="space-y-4">
       <div className="grid md:grid-cols-2 gap-4">
         <Field label="PAN Number"><Input value={form.pan_number} onChange={(e) => update("pan_number", e.target.value)} /></Field>
+        <Field label="UAN Number"><Input value={form.uan_number} onChange={(e) => update("uan_number", e.target.value)} /></Field>
+        <Field label="PF Number"><Input value={form.pf_number} onChange={(e) => update("pf_number", e.target.value)} /></Field>
         <Field label="Aadhaar Number"><Input value={form.aadhaar_number} onChange={(e) => update("aadhaar_number", e.target.value)} /></Field>
         <Field label="Passport Number"><Input value={form.passport_number} onChange={(e) => update("passport_number", e.target.value)} /></Field>
         <Field label="Passport Issue Date"><Input type="date" value={form.passport_issue_date} onChange={(e) => update("passport_issue_date", e.target.value)} /></Field>
@@ -93,7 +104,11 @@ export default function EmployeeProfileForm({ initial, isEdit, onSubmit, submitt
       <div className="grid md:grid-cols-3 gap-4">
         {GOV_DOC_TYPES.map((d) => (
           <Field key={d.key} label={d.label}>
-            <Input type="file" onChange={(e) => update("pendingFiles", { ...form.pendingFiles, [d.key]: e.target.files[0] })} />
+            <DragDropUpload
+              compact
+              value={form.pendingFiles?.[d.key] || null}
+              onChange={(file) => update("pendingFiles", { ...form.pendingFiles, [d.key]: file })}
+            />
           </Field>
         ))}
       </div>
@@ -320,8 +335,11 @@ export default function EmployeeProfileForm({ initial, isEdit, onSubmit, submitt
     <div className="grid md:grid-cols-2 gap-4">
       {DOCUMENT_TYPES.map((d) => (
         <Field key={d.key} label={d.label}>
-          <Input type="file" onChange={(e) => update("pendingFiles", { ...form.pendingFiles, [d.key]: e.target.files[0] })} />
-          {form.pendingFiles?.[d.key] && <p className="text-xs text-green-600 mt-1">{form.pendingFiles[d.key].name}</p>}
+          <DragDropUpload
+            compact
+            value={form.pendingFiles?.[d.key] || null}
+            onChange={(file) => update("pendingFiles", { ...form.pendingFiles, [d.key]: file })}
+          />
         </Field>
       ))}
     </div>

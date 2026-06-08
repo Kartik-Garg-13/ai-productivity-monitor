@@ -10,6 +10,8 @@ const links = [
   { to: "/admin/attendance", label: "Attendance" },
   { to: "/admin/workflow", label: "SOD/EOD Review" },
   { to: "/admin/leaves", label: "Leave Approvals" },
+  { to: "/admin/leave-reports", label: "Leave Reports" },
+  { to: "/admin/company-settings", label: "Company Settings" },
   { to: "/admin/announcements", label: "Announcements" },
   { to: "/admin/holidays", label: "Holidays" },
   { to: "/admin/documents", label: "Documents" },
